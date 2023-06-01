@@ -3,7 +3,6 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 
@@ -31,9 +30,9 @@ mongoose
 
 // Set up CORS
 app.use(cors({ origin: true, credentials: true }));
-app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(cookieParser());
 app.use(morgan("dev"));
 // routes
 app.use("/api/v1/users", userRoute);

@@ -40,7 +40,7 @@ exports.signUp = async (req, res, next) => {
     res.cookie("login_token", token, {
       httpOnly: true,
       maxAge: decoded.exp,
-      sameSite:"none"
+      sameSite: "none",
     });
     // Redirect the user to the home page
     res.status(200).json(user);
@@ -72,11 +72,15 @@ exports.login = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         user.password = undefined;
-        res.cookie("login_token", token, {
-          httpOnly: true,
-          maxAge: decoded.exp,
-        });
-        
+
+        res
+          .cookie("login_token", token, {
+            httpOnly: true,
+            // max age 30 days
+            maxAge: decoded.exp,
+          })
+          .status(200);
+
         res.status(200).json({
           user,
           token,

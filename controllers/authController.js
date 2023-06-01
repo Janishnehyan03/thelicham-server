@@ -40,6 +40,7 @@ exports.signUp = async (req, res, next) => {
     res.cookie("login_token", token, {
       httpOnly: true,
       maxAge: decoded.exp,
+      sameSite:"none"
     });
     // Redirect the user to the home page
     res.status(200).json(user);

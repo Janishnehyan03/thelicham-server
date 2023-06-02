@@ -3,6 +3,7 @@
 This API documentation provides information about the endpoints available in the Blog App API.
 
 ## Base URL
+
 The base URL for all requests is: `https://thelicham-server.vercel.app/api/v1`
 
 
@@ -31,6 +32,7 @@ Retrieve a specific blog post by its ID.
 
 
 ### Create a Blog Post
+
 Create a new blog post.
 
 - URL: `/posts`
@@ -49,6 +51,7 @@ Create a new blog post.
   - `thumbnail`: String
 
 ### Update a Blog Post
+
 Update an existing blog post.
 
 - URL: `/posts/:id`
@@ -81,9 +84,11 @@ Delete a blog post.
   - Authorization: Bearer `JWT_TOKEN`
 
 ## Error Handling
+
 - If a request fails, the response will include an `error` field with a descriptive error message.
 
 ## Status Codes
+
 - 200: Success
 - 201: Created
 - 400: Bad Request

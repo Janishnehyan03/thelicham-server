@@ -6,82 +6,119 @@ This API documentation provides information about the endpoints available in the
 
 The base URL for all requests is: `https://thelicham-server.vercel.app/api/v1`
 
+Creating, Updating, Deleting A Document may required a "jwt token" and role "admin"
 
+- Headers:
+  - Content-Type: application/json
+  - Authorization: Bearer `JWT_TOKEN`
 
-## Endpoints
+## POSTS
 
 ### Get All Blog Posts
 
 Retrieve a list of all blog posts.
 
-- URL: `/posts`
-- Method: GET
-- Headers:
-  - Content-Type: application/json
+- GET: `/posts`
 
 ### Get a Single Blog Post
 
 Retrieve a specific blog post by its ID.
 
-- URL: `/posts/:id`
-- Method: GET
-- Parameters:
-  - `id`: ID of the blog post
-- Headers:
-  - Content-Type: application/json
-
+- GET: `/posts/:id`
 
 ### Create a Blog Post
 
-Create a new blog post.
-
-- URL: `/posts`
-- Method: POST
-- Headers:
-  - Content-Type: application/json
-  - Authorization: Bearer `JWT_TOKEN`
+- POST: `/posts`
 
 - Body:
   - `title`: String
-  - `content`: String
+  - `description`: String
   - `slug`: String
   - `detailHtml`: String(Html Data)
   - `categories`: Array(CategoryID)
   - `author`: String (AuthorId)
   - `thumbnail`: String
+
+```json
+{
+            "_id": "64606758f61ed054cc113008",
+            "title": "example post",
+            "description": "description",
+            "slug":"example-post",
+            "__v": 0,
+            "detailHtml":"<p>Detail Html</p>",
+            "thumbnail":"image url",
+            "categories":["ID","ID"],
+            "author":"AuthorID"
+},
+```
 
 ### Update a Blog Post
 
-Update an existing blog post.
-
-- URL: `/posts/:id`
-- Method: PUT
-- Parameters:
-  - `id`: ID of the blog post
-- Headers:
-  - Content-Type: application/json
-  - Authorization: Bearer `JWT_TOKEN`
-- Body (optional):
-  - `title`: String
-  - `content`: String
-  - `slug`: String
-  - `detailHtml`: String(Html Data)
-  - `categories`: Array(CategoryID)
-  - `author`: String (AuthorId)
-  - `thumbnail`: String
-  
+- PATCH: `/posts/:id`
 
 ### Delete a Blog Post
 
 Delete a blog post.
 
-- URL: `/posts/:id`
-- Method: DELETE
-- Parameters:
-  - `id`: ID of the blog post
-- Headers:
-  - Content-Type: application/json
-  - Authorization: Bearer `JWT_TOKEN`
+- DELETE: `/posts/:id`
+
+## CATEGORIES
+
+### Get All Categories
+
+Retrieve a list of all categories.
+
+- GET: `/category`
+
+### Get a Single Category
+
+- GET: `/category/:id`
+
+### Create Category
+
+- POST: `/category/`
+
+### Update Category
+
+- PATCH: `/category/:id`
+
+### Delete Category
+
+- DELETE: `/category/:id`
+
+## AUTHORS
+
+### Get All Authors
+
+- GET: `/author`
+
+### Get a Single Author
+
+- GET: `/author/:id`
+
+## AUTHENTICATION
+
+### Register a User
+
+Register a new user.
+
+- POST: `/auth/signup`
+- Body:
+  - `email`
+  - `password`
+  - `username`
+
+
+### Login
+
+Authenticate a user and generate an access token.
+
+- POST: `/login`
+- Body:
+  - `email`
+  - `password`
+
 
 ## Error Handling
 

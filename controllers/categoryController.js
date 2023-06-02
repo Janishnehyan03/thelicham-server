@@ -13,7 +13,7 @@ exports.createCategory = async (req, res, next) => {
 exports.getAllCategories = async (req, res, next) => {
   try {
     let data = await Category.find();
-    res.status(200).json(data);
+    res.status(200).json({ results: data.length, data });
   } catch (error) {
     next(error);
   }

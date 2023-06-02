@@ -11,12 +11,18 @@ const categorySchema = mongoose.Schema({
   subCategories: [
     {
       type: mongoose.Types.ObjectId,
-      required: [true, "Category is required"],
       ref: "Category",
     },
   ],
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
-
+categorySchema.pre(/^find/, function (next) {
+  this.where("deleted").equals(false);
+  next();
+});
 // Create the category model
 const Category = mongoose.model("Category", categorySchema);
 module.exports = Category;

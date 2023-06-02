@@ -1,10 +1,19 @@
 const { protect, restrictTo } = require("../controllers/authController");
-const { createCategory, getAllCategories, createSubCategory, getAllSubCategories } = require("../controllers/categoryController");
+const {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  getOneCategory,
+  deleteCategory,
+} = require("../controllers/categoryController");
 const router = require("express").Router();
 
 router.post("/", protect, restrictTo("admin"), createCategory);
 router.get("/", getAllCategories);
-router.get("/subcategory", getAllSubCategories);
-router.post("/subcategory", protect, restrictTo("admin"), createSubCategory);
+router.get("/:id", getOneCategory);
+router
+  .route("/:id", protect, restrictTo("admin"))
+  .patch(updateCategory)
+  .delete(deleteCategory);
 
-module.exports=router
+module.exports = router;

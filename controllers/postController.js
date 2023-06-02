@@ -47,7 +47,7 @@ exports.createPost = async (req, res, next) => {
 exports.getAllPosts = async (req, res, next) => {
   try {
     const { sort, limit } = req.query;
-    let query = Post.find().populate("categories").populate("author");
+    let query = Post.find().populate("categories").populate("author").select('-detailHtml')
 
     if (sort) {
       query = query.sort(sort);
@@ -58,7 +58,6 @@ exports.getAllPosts = async (req, res, next) => {
     }
 
     const data = await query.exec();
-
     res.status(200).json({ results: data.length, data });
   } catch (error) {
     next(error);

@@ -19,7 +19,7 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: ".hbs",
-      partialsDir:path.join(__dirname, '/views/partials'),
+      partialsDir:path.join(__dirname, '/views'),
       defaultLayout: false,
     },
     viewPath: "./views",

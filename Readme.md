@@ -1,6 +1,6 @@
 # Thelicham Server API
 
-This API documentation provides information about the endpoints available in the Blog App API.
+This API documentation provides information about the endpoints available in the THELICHAM SERVER API.
 
 ## Base URL
 
@@ -50,7 +50,7 @@ Retrieve a specific blog post by its ID.
             "thumbnail":"image url",
             "categories":["ID","ID"],
             "author":"AuthorID"
-},
+}
 ```
 
 ### Update a Blog Post

@@ -6,7 +6,6 @@ const slugify = require("slugify");
 
 exports.createPost = async (req, res, next) => {
   try {
-
     const {
       title,
       description,
@@ -46,19 +45,38 @@ exports.createPost = async (req, res, next) => {
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const { sort, limit } = req.query;
-    let query = Post.find().populate("categories").populate("author").select('-detailHtml')
+    const { sort, limit, page } = req.query;
+    const pageSize = parseInt(limit) || 10;
+    const currentPage = parseInt(page) || 1;
+    const skip = (currentPage - 1) * pageSize;
+
+    let query = Post.find()
+      .populate("categories")
+      .populate("author")
+      .select("-detailHtml")
+      .skip(skip)
+      .limit(pageSize);
 
     if (sort) {
       query = query.sort(sort);
     }
 
-    if (limit) {
-      query = query.limit(parseInt(limit));
-    }
+    const [results, totalCount] = await Promise.all([
+      query.exec(),
+      Post.countDocuments(),
+    ]);
 
-    const data = await query.exec();
-    res.status(200).json({ results: data.length, data });
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    res.status(200).json({
+      results: results.length,
+      data: results,
+      pagination: {
+        totalResults: totalCount,
+        currentPage,
+        totalPages,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -87,26 +105,29 @@ exports.getPostsByCategoryName = async (req, res, next) => {
     next(error);
   }
 };
-exports.getPostsByAuthorName = async (req, res, next) => {
+exports.getPost = async (req, res, next) => {
   try {
-    // Find the category document that matches the provided category name
-    const author = await Author.findOne({
-      name: req.params.author,
-    }).exec();
+    const { slug } = req.params;
 
-    if (!author) {
-      // Category not found, handle the error accordingly
-      throw new Error("Category not found");
+    // Find the post by slug
+    const post = await Post.findOne({ slug: slug });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
     }
 
-    // Find posts that have the matching category ObjectId
-    const posts = await Post.find({
-      author: new mongoose.Types.ObjectId(author._id),
-    })
-      .populate("category")
-      .populate("author")
-      .exec();
-    res.status(200).json({ results: posts.length, posts });
+    // Find the related posts based on some criteria (e.g., same category)
+    const relatedPosts = await Post.find({
+      category: post.category,
+      slug: { $ne: post.slug }, // Exclude the current post
+    }).select('-detailHtml')
+
+    res.status(200).json({
+      data: {
+        post,
+        relatedPosts,
+      },
+    });
   } catch (error) {
     next(error);
   }

@@ -14,10 +14,12 @@ const postSchema = new mongoose.Schema(
     slug: {
       type: String,
       required: true,
+      unique: [true, "This slug is already used"],
     },
     detailHtml: {
       type: String,
       required: true,
+      unique: [true, "This field is already used"],
     },
     categories: [
       {

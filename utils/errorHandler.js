@@ -17,7 +17,7 @@ const handleCastError = (error, res) => {
 };
 
 const handleMongooseError = (error, res) => {
-  console.log(error);
+  // console.log(error);
   if (error.code === 11000) {
     handleDuplicateKeyError(error, res);
   } else if (error.name === "ValidationError") {

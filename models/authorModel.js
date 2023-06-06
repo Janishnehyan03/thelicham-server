@@ -11,9 +11,13 @@ const authorSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  username: {
+    required: [true, "Username is required"],
+    type: String,
+    unique: [true, "Username is already in use"],
+  },
   image: {
     type: String,
-    required: true,
   },
   facebook: {
     type: String,
@@ -27,6 +31,15 @@ const authorSchema = new mongoose.Schema({
   email: {
     type: String,
   },
+  deleted: {
+    default: false,
+    type: Boolean,
+  },
+});
+
+authorSchema.pre(/^find/, function (next) {
+  this.where("deleted").ne(true);
+  next();
 });
 
 const Author = mongoose.model("Author", authorSchema);

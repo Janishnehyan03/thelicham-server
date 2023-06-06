@@ -7,24 +7,41 @@ const Schema = mongoose.Schema;
 // Define the User schema
 const userSchema = new Schema(
   {
-    username: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
+      maxLength: [255, "Email cannot be more than 255 characters"],
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please provide a valid email address",
+      ],
+    },
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+      minLength: [2, "Username must be at least 2 characters long"],
+      maxLength: [50, "Username cannot be more than 50 characters"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
       select: false,
     },
     role: {
       type: String,
-      default: "user",
       enum: ["user", "admin"],
+      default: "user",
+    },
+    otpToken: {
+      type: String,
+    },
+    otpTokenExpires: {
+      type: Date,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

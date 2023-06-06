@@ -19,8 +19,9 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: ".hbs",
+      layoutsDir:"views",
     },
-    viewPath: "./views",
+    viewPath: "views",
     extName: ".hbs",
   })
 );

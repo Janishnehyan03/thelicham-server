@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
-const {dirname} = require("path");
+const path = require("path");
 const dontenv=require('dotenv')
 
 dontenv.config()
@@ -19,7 +19,7 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: ".hbs",
-      // partialsDir: dirname(require.main.filename) + "/views",
+      partialsDir: path.join(process.cwd(), 'views'),
       defaultLayout: false,
     },
     viewPath: "./views",

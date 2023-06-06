@@ -19,7 +19,7 @@ transporter.use(
   hbs({
     viewEngine: {
       extname: ".hbs",
-      layoutsDir: path.join(process.cwd(), "views"),
+      layoutsDir: path.join(process.cwd(), "views/layout"),
     },
     viewPath: path.join(process.cwd(), "views"),
     extName: ".hbs",

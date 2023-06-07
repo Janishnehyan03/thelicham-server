@@ -70,7 +70,7 @@ exports.login = async (req, res, next) => {
       if (!existingUser) {
         res.status(401).json({ message: "No User Found In This Email" });
       } else {
-        let correctPassword = await existingUser.correctPassword(
+        let correctPassword = await existingUser.comparePassword(
           req.body.password,
           existingUser.password
         );

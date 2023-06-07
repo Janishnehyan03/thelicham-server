@@ -17,7 +17,7 @@ const handleCastError = (error, res) => {
 };
 
 const handleMongooseError = (error, res) => {
-  // console.log(error);
+  console.log(error);
   if (error.code === 11000) {
     handleDuplicateKeyError(error, res);
   } else if (error.name === "ValidationError") {
@@ -25,7 +25,6 @@ const handleMongooseError = (error, res) => {
   } else if (error.name === "CastError") {
     handleCastError(error, res);
   } else {
-    console.log(error);
     res.status(500).json({ message: "Internal Server Error", error });
   }
 };

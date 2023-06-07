@@ -102,7 +102,9 @@ exports.login = async (req, res, next) => {
       }
     }
   } catch (err) {
-    next(err);
+    console.log(err);
+    res.status(400).json(err)
+    // next(err);
   }
 };
 

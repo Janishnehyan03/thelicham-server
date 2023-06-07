@@ -25,7 +25,7 @@ const handleMongooseError = (error, res) => {
   } else if (error.name === "CastError") {
     handleCastError(error, res);
   } else {
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", error });
   }
 };
 

@@ -44,7 +44,7 @@ exports.signUp = async (req, res, next) => {
         subject: "Email from Thelicham Monthly",
         title: "Confirmation Email",
         otpToken: otp,
-        url: `${req.protocol}://${req.hostname}/api/v1/auth/verify-token?email=${newUser.email}&otpToken=${otp}`,
+        url: `${req.protocol}://${req.hostname}/api/v1/auth/verify-otp?email=${newUser.email}&otpToken=${otp}`,
       })
         .send("OTP")
         .then((data) => {

@@ -120,7 +120,10 @@ exports.getPost = async (req, res, next) => {
     const relatedPosts = await Post.find({
       category: post.category,
       slug: { $ne: post.slug }, // Exclude the current post
-    }).select('-detailHtml')
+    })
+      .select("-detailHtml")
+      .populate("author")
+      .populate("categories");
 
     res.status(200).json({
       data: {

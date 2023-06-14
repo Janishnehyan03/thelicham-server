@@ -8,8 +8,6 @@ const authorSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
   },
   username: {
     required: [true, "Username is required"],
@@ -28,9 +26,7 @@ const authorSchema = new mongoose.Schema({
   instagram: {
     type: String,
   },
-  email: {
-    type: String,
-  },
+
   deleted: {
     default: false,
     type: Boolean,

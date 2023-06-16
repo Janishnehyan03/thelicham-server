@@ -12,7 +12,7 @@ exports.createCategory = async (req, res, next) => {
 
 exports.getAllCategories = async (req, res, next) => {
   try {
-    let data = await Category.find().populate('subCategories')
+    let data = await Category.find().populate("subCategories");
     res.status(200).json({ results: data.length, data });
   } catch (error) {
     next(error);
@@ -54,6 +54,16 @@ exports.updateCategory = async (req, res, next) => {
 };
 
 exports.getOneCategory = async (req, res, next) => {
+  try {
+    let data = await Category.findOne({ name: req.params.name }).populate(
+      "subCategories"
+    );
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getCategoryByName = async (req, res, next) => {
   try {
     let data = await Category.findById(req.params.id).populate("subCategories");
     res.status(200).json(data);

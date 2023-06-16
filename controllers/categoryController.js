@@ -12,7 +12,7 @@ exports.createCategory = async (req, res, next) => {
 
 exports.getAllCategories = async (req, res, next) => {
   try {
-    let data = await Category.find();
+    let data = await Category.find().populate('subCategories')
     res.status(200).json({ results: data.length, data });
   } catch (error) {
     next(error);

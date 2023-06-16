@@ -18,6 +18,10 @@ const categorySchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 categorySchema.pre(/^find/, function (next) {
   this.where("deleted").equals(false);

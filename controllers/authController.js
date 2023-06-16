@@ -103,7 +103,7 @@ exports.login = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(400).json(err)
+    res.status(400).json(err);
     // next(err);
   }
 };
@@ -146,8 +146,8 @@ exports.verifyToken = async (req, res, next) => {
 
 exports.protect = async (req, res, next) => {
   try {
-    const token = req.cookies.login_token
-      ? req.cookies.login_token
+    const token = req.cookies.jwt
+      ? req.cookies.jwt
       : req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId);

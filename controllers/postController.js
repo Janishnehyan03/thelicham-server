@@ -110,7 +110,9 @@ exports.getPost = async (req, res, next) => {
     const { slug } = req.params;
 
     // Find the post by slug
-    const post = await Post.findOne({ slug: slug });
+    const post = await Post.findOne({ slug: slug })
+      .populate("author")
+      .populate("categories");
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });

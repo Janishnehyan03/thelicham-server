@@ -2,7 +2,15 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: '/tmp',
+  filename: (req, file, cb) => {
+      cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
 const { promisify } = require("util");
 const fs = require("fs");
 const sharp = require('sharp');

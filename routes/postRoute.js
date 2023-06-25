@@ -1,7 +1,13 @@
 const router = require("express").Router();
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: '/tmp',
+  filename: (req, file, cb) => {
+      cb(null, file.originalname);
+  },
+});
 
+const upload = multer({ storage });
 const { protect, restrictTo } = require("../controllers/authController");
 const {
   createPost,

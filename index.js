@@ -14,6 +14,7 @@ const postRoute = require("./routes/postRoute");
 const authorRoute = require("./routes/authorRoute");
 const visitorCountRoute=require('./routes/visitorRoute')
 const subscriptionRoute=require('./routes/subscriptionRoute')
+const imageRoute=require('./routes/imageRoute')
 
 const handleMongoError = require("./utils/errorHandler");
 const Post = require("./models/postModel");
@@ -52,6 +53,7 @@ app.use("/api/v1/category", categoryRoute);
 app.use("/api/v1/post", postRoute);
 app.use("/api/v1/visitors", visitorCountRoute);
 app.use("/api/v1/subscription", subscriptionRoute);
+app.use("/api/v1/image", imageRoute);
 app.all("*", (req, res, next) => {
   res.status(404).json("No URL " + req.originalUrl + " found in this server");
 });

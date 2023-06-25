@@ -3,18 +3,21 @@ const Category = require("../models/categoryModel");
 const Post = require("../models/postModel");
 const Author = require("../models/authorModel");
 const slugify = require("slugify");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "df690pfy3",
+  api_key: "396969221864348",
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 exports.createPost = async (req, res, next) => {
   try {
-    const {
-      title,
-      description,
-      detailHtml,
-      author,
-      categories,
-      thumbnail,
-      slug,
-    } = req.body;
+    const thumbnail = req.file.path;
+
+    const { title, description, detailHtml, author, categories, slug } =
+      req.body;
     if (
       !title ||
       !description ||
@@ -26,13 +29,15 @@ exports.createPost = async (req, res, next) => {
     ) {
       return res.status(400).json({ error: "Invalid input" });
     }
+    const uploadResult = await cloudinary.uploader.upload(thumbnail);
+
     const post = new Post({
       title,
       description,
       detailHtml,
       author,
       categories,
-      thumbnail: "image",
+      thumbnail: uploadResult.secure_url, // Set the thumbnail URL from Cloudinary
       slug: slugify(slug),
     });
     await post.save();

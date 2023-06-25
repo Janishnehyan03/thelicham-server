@@ -5,7 +5,8 @@ const dotenv = require("dotenv");
 const crypto = require("crypto");
 const Subscription = require("../models/subscriptionModel");
 const moment = require("moment");
-const { protect } = require("../controllers/authController");
+const { protect, restrictTo } = require("../controllers/authController");
+const Magazine = require("../models/magazineModel");
 
 dotenv.config();
 
@@ -103,17 +104,16 @@ router.get("/", protect, async (req, res) => {
 
     let hasSubscription = false;
     let expiryDate = null;
+    const magazines = await Magazine.find();
 
-    if (subscription && subscription.endDate > Date.now()) {
+    if (
+      subscription &&
+      subscription.endDate > Date.now() &&
+      subscription.paymentStatus === "success"
+    ) {
       hasSubscription = true;
       expiryDate = moment(subscription.endDate).format("MMMM Do YYYY");
-      const data = [
-        {
-          title: "title",
-          description: "description",
-        },
-      ];
-      res.json({ user: { hasSubscription, expiryDate, data } });
+      res.json({ magazines, user: { hasSubscription, expiryDate } });
     } else {
       res.json({ user: { hasSubscription, expiryDate } });
     }
@@ -122,5 +122,17 @@ router.get("/", protect, async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-
+router.post(
+  "/magazine",
+  protect,
+  restrictTo("admin"),
+  async (req, res, next) => {
+    try {
+      let data = await Magazine.create(req.body);
+      res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 module.exports = router;

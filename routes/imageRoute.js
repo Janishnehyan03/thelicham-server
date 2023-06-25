@@ -39,7 +39,8 @@ const imageSchema = new mongoose.Schema({
 
 const Image = mongoose.model("Image", imageSchema);
 const uploadToCloudinary = async (file) => {
-  const unlink = promisify(fs.unlink);
+  try {
+    const unlink = promisify(fs.unlink);
 
   // Read the file buffer using fs
 
@@ -62,6 +63,9 @@ const uploadToCloudinary = async (file) => {
   await unlink(file.path);
 
   return image;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 router.post("/upload", upload.array("images"), async (req, res) => {

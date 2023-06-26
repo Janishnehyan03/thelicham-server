@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 const storage = multer.diskStorage({
-  destination: '/tmp',
+  destination: "/tmp",
   filename: (req, file, cb) => {
-      cb(null, file.originalname);
+    cb(null, file.originalname);
   },
 });
 
@@ -13,8 +13,7 @@ const upload = multer({ storage });
 
 const { promisify } = require("util");
 const fs = require("fs");
-const sharp = require('sharp');
-
+const sharp = require("sharp");
 
 cloudinary.config({
   cloud_name: "df690pfy3",
@@ -42,27 +41,26 @@ const uploadToCloudinary = async (file) => {
   try {
     const unlink = promisify(fs.unlink);
 
-  // Read the file buffer using fs
+    // Read the file buffer using fs
 
-  // Upload the file to Cloudinary
-  const uploadResult = await cloudinary.uploader.upload(file.path, {
-    folder: "images", // Optional folder name in Cloudinary
-    
-  });
+    // Upload the file to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(file, {
+      folder: "images", // Optional folder name in Cloudinary
+    });
 
-  // Create a new image document in the database
-  const image = new Image({
-    publicId: uploadResult.public_id,
-    url: uploadResult.secure_url, // Store the public URL in the image model
-    createdAt: new Date(),
-  });
+    // Create a new image document in the database
+    const image = new Image({
+      publicId: uploadResult.public_id,
+      url: uploadResult.secure_url, // Store the public URL in the image model
+      createdAt: new Date(),
+    });
 
-  await image.save();
+    await image.save();
 
-  // Delete the uploaded file from the local filesystem
-  await unlink(file.path);
+    // Delete the uploaded file from the local filesystem
+    await unlink(file.path);
 
-  return image;
+    return image;
   } catch (error) {
     console.log(error);
   }
@@ -70,10 +68,11 @@ const uploadToCloudinary = async (file) => {
 
 router.post("/upload", upload.array("images"), async (req, res) => {
   try {
-    const files = req.files;
-
+    const files = req.body.images;
     // Upload each file to Cloudinary
-    const uploadPromises = files.map(uploadToCloudinary);
+    const uploadPromises = files.map((item, index) =>
+      uploadToCloudinary(req.body.images[index])
+    );
 
     // Wait for all uploads and database saves to complete
     const uploadedImages = await Promise.all(uploadPromises);

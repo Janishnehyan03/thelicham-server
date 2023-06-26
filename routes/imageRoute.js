@@ -1,19 +1,9 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: "/tmp",
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({ storage });
 
 const { promisify } = require("util");
 const fs = require("fs");
-const sharp = require("sharp");
 
 cloudinary.config({
   cloud_name: "df690pfy3",
@@ -66,7 +56,7 @@ const uploadToCloudinary = async (file) => {
   }
 };
 
-router.post("/upload", upload.array("images"), async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
     const files = req.body.images;
     // Upload each file to Cloudinary

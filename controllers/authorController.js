@@ -1,9 +1,36 @@
 const Author = require("../models/authorModel");
 const Post = require("../models/postModel");
+const cloudinary = require("cloudinary").v2;
+
+const { promisify } = require("util");
+const fs = require("fs");
+
+cloudinary.config({
+  cloud_name: "df690pfy3",
+  api_key: "396969221864348",
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
+const uploadToCloudinary = async (file) => {
+  try {
+    // Read the file buffer using fs
+
+    // Upload the file to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(file, {
+      folder: "images", // Optional folder name in Cloudinary
+    });
+    return uploadResult.secure_url;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 exports.createAuthor = async (req, res, next) => {
   try {
-    let data = await Author.create(req.body);
+    let image = await uploadToCloudinary(req.body.image);
+    let data = await Author.create({
+      ...req.body,
+      image,
+    });
     res.status(200).json(data);
   } catch (error) {
     next(error);

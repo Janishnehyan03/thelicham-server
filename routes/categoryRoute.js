@@ -5,12 +5,13 @@ const {
   updateCategory,
   getOneCategory,
   deleteCategory,
+  getCategoryById,
 } = require("../controllers/categoryController");
 const router = require("express").Router();
 
 router.post("/", protect, restrictTo("admin"), createCategory);
 router.get("/", getAllCategories);
-router.get("/:id", getOneCategory);
+router.get("/:id", getCategoryById);
 router.get("/name/:name", getOneCategory);
 router
   .route("/:id", protect, restrictTo("admin"))

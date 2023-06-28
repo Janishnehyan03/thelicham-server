@@ -63,7 +63,7 @@ exports.getOneCategory = async (req, res, next) => {
     next(error);
   }
 };
-exports.getCategoryByName = async (req, res, next) => {
+exports.getCategoryById = async (req, res, next) => {
   try {
     let data = await Category.findById(req.params.id).populate("subCategories");
     res.status(200).json(data);

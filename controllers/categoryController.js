@@ -31,21 +31,24 @@ exports.updateCategory = async (req, res, next) => {
       return;
     }
 
-    const updatedData = {};
-    if (req.body.name) {
-      updatedData.name = req.body.name;
+    const category = await Category.findById(categoryId);
+
+    if (!category) {
+      res.status(404).json({ error: "Category not found." });
+      return;
     }
 
-    if (subcategoryIds && subcategoryIds.length > 0) {
-      updatedData.$addToSet = { subCategories: { $each: subcategoryIds } };
-    }
-
-    // Update the category using findByIdAndUpdate
-    const updatedCategory = await Category.findByIdAndUpdate(
-      categoryId,
-      updatedData,
-      { new: true } // To return the updated category
+    const updatedSubcategories = category.subCategories.filter((subcategory) =>
+      subcategoryIds.includes(subcategory._id.toString())
     );
+
+     category.subCategories = updatedSubcategories;
+
+    if (req.body.name) {
+      category.name = req.body.name;
+    }
+
+    const updatedCategory = await category.save();
 
     res.status(200).json(updatedCategory);
   } catch (error) {

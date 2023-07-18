@@ -1,0 +1,96 @@
+<div class="mx-6">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      {{#each posts}}
+      <div class="swiper-slide ">
+        <div class="carousel-item rounded-[20px] " style="background-image: url('{{thumbnail}}');">
+          <div class="carousel-content rounded-[20px]">
+            <h1 class="text-4xl font-bold malayalam-font  text-center text-white">{{title}}</h1>
+            <p class="text-[15px] lg:flex hidden mt-3 max-w-2xl text-gray-300 malayalam-font text-center">{{description}}</p>
+          </div>
+        </div>
+      </div>
+      {{/each }}
+      <!-- Add more slides here -->
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+</div>
+
+
+
+
+
+{{!-- posts --}}
+
+<section class="bg-white">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+    <div class="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+      <h2 class="mb-4 uppercase text-3xl lg:text-4xl tracking-tight font-extrabold hover:text-black text-red-900">
+        Posts
+      </h2>
+    </div>
+    <div id="posts-container" class="grid gap-8 lg:grid-cols-3">
+      {{#each posts}}
+      <div class="max-w-sm bg-white border hover:bg-gray-100 group border-gray-200 rounded-lg shadow">
+        <a href="/post/{{slug}}">
+          <img class="rounded-t-lg" src={{thumbnail}} alt="{{title}}" style="height: 200px; width: 100%;">
+        </a>
+        <div class="p-5">
+          <a href="/post/{{slug}}">
+            <h5 class="font-bold mb-2 transition group-hover:text-red-500 text-red-800">
+              <span class="malayalam-font font-bold">{{title}}</span>
+            </h5>
+          </a>
+          <p class="malayalam-font description" id="description">{{description}}</p>
+          <div class="flex mt-3 items-center">
+            <img src="{{authorImage}}" class="h-7 mr-2 rounded-full" alt="">
+            <p class="font-semibold text-gray-400 malayalam-font">{{author}}</p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+<style>
+  .malayalam-font {
+    font-family: 'Noto Sans Malayalam', sans-serif;
+  }
+
+  .description {
+    font-size: 12px;
+    font-weight: 300;
+    color: gray;
+  }
+
+
+  .carousel-item {
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+  }
+
+  .carousel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+  }
+
+  .swiper-pagination-bullet {
+    background-color: white;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: gray;
+  }
+</style>
+
+<!-- Include Swiper library -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />

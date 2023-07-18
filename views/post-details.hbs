@@ -1,0 +1,55 @@
+<main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white">
+    <article class="max-w-3xl px-6 py-24 mx-auto space-y-12">
+        <div class="w-full mx-auto space-y-4 text-center">
+            <h1 class="text-4xl malayalam-font font-bold text-red-800 leading-tight md:text-5xl">
+                {{post.title}}
+            </h1>
+            <img src="{{post.thumbnail}}" alt="" class="w-full rounded-[20px]" height="400" width="400" />
+            <div class="flex justify-center flex-1 text-center">
+                <p class="text-xs text-red-700 hover:text-red-300 font-semibold tracking-wider uppercase">
+                    #Category |
+                </p>
+            </div>
+
+            <p class="text-sm">
+                <span class="mr-3">Author Name</span>
+            </p>
+            <div class="flex justify-around">
+                <p>
+                    <span class="h-4">Date</span>
+                </p>
+                <p>
+                    <span class="h-4">Reading Time</span>
+                </p>
+            </div>
+        </div>
+        <div>
+            {{{post.detailHtml}}}
+        </div>
+        <div>
+            <div class="flex flex-col items-center justify-center">
+                <img style="border-radius: 9999px;" class="w-20 rounded-full" src="{{post.author.image}}" alt="" />
+                <h4 class="text-lg font-semibold">{{post.author.name}}</h4>
+            </div>
+            <div class="flex justify-center pt-4 space-x-4 align-center">
+                <!-- Social media links -->
+            </div>
+        </div>
+    </article>
+</main>
+<aside aria-label="Related articles" class="py-8 lg:py-24 bg-gray-50">
+    <div class="px-4 mx-auto max-w-screen-xl">
+        <h2 class="mb-8 text-2xl font-bold text-gray-900">Related articles</h2>
+        <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+            <article class="max-w-xs">
+                <a href="#">
+                    <img src="image-url" class="mb-5 rounded-lg" alt="Image 1" />
+                </a>
+                <h2 class="mb-2 text-xl font-bold leading-tight text-gray-900">
+                    <a href="#">Title</a>
+                </h2>
+                <p class="mb-4 font-light text-gray-500">Author</p>
+            </article>
+        </div>
+    </div>
+</aside>

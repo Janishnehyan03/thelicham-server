@@ -6,18 +6,21 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const fs = require("fs");
+const hbs = require("express-handlebars");
 
 const userRoute = require("./routes/userRoute");
 const authRoute = require("./routes/authRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const postRoute = require("./routes/postRoute");
 const authorRoute = require("./routes/authorRoute");
-const visitorCountRoute=require('./routes/visitorRoute')
-const subscriptionRoute=require('./routes/subscriptionRoute')
-const imageRoute=require('./routes/imageRoute')
+const visitorCountRoute = require("./routes/visitorRoute");
+const subscriptionRoute = require("./routes/subscriptionRoute");
+const imageRoute = require("./routes/imageRoute");
+const viewRoute = require("./routes/viewRoute");
 
 const handleMongoError = require("./utils/errorHandler");
 const Post = require("./models/postModel");
+const path = require("path");
 
 dotenv.config();
 // Connect to the database
@@ -45,7 +48,16 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.static("public"));
-// routes
+
+app.engine( 'hbs', hbs.engine( { 
+  extname: 'hbs', 
+  defaultLayout: 'main', 
+  layoutsDir: __dirname + '/views/layouts/',
+  partialsDir: __dirname + '/views/partials/'
+} ) );
+
+app.set( 'view engine', 'hbs' );// routes
+app.use("/", viewRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/author", authorRoute);

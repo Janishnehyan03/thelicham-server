@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@700&display=swap");
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@400;700&display=swap'); */
+@font-face {
+  font-family: "Noto Sans Malayalam";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Noto Sans Malayalam"), local("NotoSansMalayalam-Regular"),
+    url("https://fonts.gstatic.com/s/notosansmalayalam/v29/KFOmCnqEu92Fr1Mu4mxP.woff2")
+      format("woff2");
+}
+@media print {
+  .pdf-container {
+    display: none;
+  }
+}
+.html-content {
+  font-family: 'Noto Serif Malayalam', serif;
+  
+}

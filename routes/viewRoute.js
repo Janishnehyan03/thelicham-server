@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
       };
     });
 
-    res.render("index", { posts, title: "Thelicham" });
+    res.render("home", { posts, title: "Thelicham" ,pageDescription:"Thelicham"});
   } catch (error) {
     console.log(error);
     res.render("error");
@@ -25,11 +25,16 @@ router.get("/", async (req, res) => {
 });
 router.get("/post/:slug", async (req, res) => {
   try {
-    let post = await Post.findOne({ slug: req.params.slug }).lean()
+    let post = await Post.findOne({ slug: req.params.slug })
+      .lean()
       .populate("author")
       .populate("categories");
     if (post) {
-      res.render("post-details", { post, title: `${post?.title} | Thelicham` });
+      res.render("post-details", {
+        post,
+        title: `${post?.title} | Thelicham`,
+        pageDescription: post?.description,
+      });
     }
   } catch (error) {
     console.log(error);

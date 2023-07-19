@@ -1,12 +1,10 @@
-"use client";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useState } from "react";
-
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   return (
     <div>
       <section className="bg-gray-50 ">
@@ -22,7 +20,7 @@ function SignUpPage() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
                 Create your account
               </h1>
-              <form className="space-y-4 md:space-y-6" >
+              <form className="space-y-4 md:space-y-6">
                 <div>
                   <label
                     htmlFor="email"
@@ -46,7 +44,7 @@ function SignUpPage() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                   Your username
+                    Your username
                   </label>
                   <input
                     type="email"
@@ -82,7 +80,7 @@ function SignUpPage() {
                   type="submit"
                   className="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                 >
-                Register
+                  Register
                 </button>
                 <p className="text-sm font-light text-gray-500 ">
                   Already have an account?{" "}

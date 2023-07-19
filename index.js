@@ -47,16 +47,19 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
-app.use(express.static("public"));
 
-app.engine( 'hbs', hbs.engine( { 
-  extname: 'hbs', 
-  defaultLayout: 'main', 
-  layoutsDir: __dirname + '/views/layouts/',
-  partialsDir: __dirname + '/views/partials/'
-} ) );
 
-app.set( 'view engine', 'hbs' );// routes
+app.engine(
+  "hbs",
+  hbs.engine({
+    extname: "hbs",
+    defaultLayout: "main",
+    layoutsDir: __dirname + "/views/layouts/",
+    partialsDir: __dirname + "/views/partials/",
+  })
+);
+
+app.set("view engine", "hbs"); // routes
 app.use("/", viewRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/auth", authRoute);
@@ -66,6 +69,11 @@ app.use("/api/v1/post", postRoute);
 app.use("/api/v1/visitors", visitorCountRoute);
 app.use("/api/v1/subscription", subscriptionRoute);
 app.use("/api/v1/image", imageRoute);
+
+app.use(express.static(path.join(__dirname, "client/build")));
+app.get("*", function (req, res) {
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
 app.all("*", (req, res, next) => {
   res.status(404).json("No URL " + req.originalUrl + " found in this server");
 });

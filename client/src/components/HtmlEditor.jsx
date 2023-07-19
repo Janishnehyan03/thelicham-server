@@ -1,14 +1,8 @@
-"use client";
+import React, { useEffect, useState } from 'react';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-const Editor = dynamic(
-  () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
-  { ssr: false }
-);
+import { Editor } from 'react-draft-wysiwyg'; // Import the Editor directly
 
 const HtmlEditor = ({ setHtml }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());

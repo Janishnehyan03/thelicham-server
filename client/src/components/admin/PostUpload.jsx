@@ -1,13 +1,11 @@
-"use client";
-import Axios from "@/utils/Axios";
-import { useUserContext } from "@/utils/userContext";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Axios from "../../utils/Axios";
+import { useUserContext } from "../../utils/userContext";
 import HtmlEditor from "../HtmlEditor";
 
 function PostUpload() {
   const { getMe } = useUserContext();
-  const router = useRouter();
+  const token = localStorage.getItem("login_token");
 
   const [loading, setLoading] = useState(false);
   const [html, setHtml] = useState("");
@@ -120,14 +118,19 @@ function PostUpload() {
       "/post",
 
       uploadData,
-      { headers: { "content-type": "multipart/form-data" } }
+      {
+        headers: {
+          "content-type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     )
       .then((response) => {
         if (response.status === 200) {
           setFormData(initialValue);
           setHtml("");
           setLoading(false);
-          window.location.href = "/admin/dashboard";
+          window.location.href = "/dashboard";
         }
       })
       .catch((error) => {
@@ -140,7 +143,7 @@ function PostUpload() {
   useEffect(() => {
     getMe().then((userData) => {
       if (!userData || !userData.role === "admin") {
-        router.push("/");
+        window.location.href = "/";
       }
     });
   }, []);
@@ -151,187 +154,181 @@ function PostUpload() {
 
   return (
     <div className="flex justify-center p-6 bg-white pb-14 items-center">
-    <form className="mx-3 border-2 p-10 rounded" onSubmit={handleSubmit}>
-      <div className="border-b">
-        <h2 className="text-2xl text-center font-semibold leading-7 text-gray-900">
-          Create New Post
-        </h2>
+      <form className="mx-3 border-2 p-10 rounded" onSubmit={handleSubmit}>
+        <div className="mt-6 flex items-center justify-end gap-x-6">
+          {loading ? (
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Processing...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Save Post
+            </button>
+          )}
+        </div>
+        <div className="border-b">
+          <h2 className="text-2xl text-center font-semibold leading-7 text-gray-900">
+            Create New Post
+          </h2>
 
-        <div className="mt-10">
-          <div>
-            <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-              Post Title
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="title"
-                id="title"
-                onChange={handleInputChange}
-                value={formData.title}
-                autoComplete="off"
-                className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+          <div className="mt-10">
+            <div>
+              <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+                Post Title
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  onChange={handleInputChange}
+                  value={formData.title}
+                  autoComplete="off"
+                  className="block w-full p-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-              Description
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="description"
-                id="description"
-                onChange={handleInputChange}
-                value={formData.description}
-                autoComplete="off"
-                className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+            <div>
+              <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+                Description
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="description"
+                  id="description"
+                  onChange={handleInputChange}
+                  value={formData.description}
+                  autoComplete="off"
+                  className="block w-full p-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-              Slug
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                id="slug"
-                name="slug"
-                autoComplete="off"
-                value={formData.slug}
-                onChange={handleInputChange}
-                className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+            <div>
+              <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+                Slug
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  id="slug"
+                  name="slug"
+                  autoComplete="off"
+                  value={formData.slug}
+                  onChange={handleInputChange}
+                  className="block w-full p-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
             </div>
-          </div>
-          <div className="col-span-full">
-            <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-              Cover photo
-            </label>
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-              <div className="text-center">
-                {previewImage && (
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    style={{
-                      maxWidth: '100%',
-                      marginTop: '10px',
-                      width: 500,
-                      height: 300
-                    }}
-                  />
-                )}
-                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      onChange={(e) => {
-                        setThumbnail(e.target.files[0]);
-                        handleImageChange(e);
+            <div className="col-span-full">
+              <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+                Cover photo
+              </label>
+              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                <div className="text-center">
+                  {previewImage && (
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      style={{
+                        maxWidth: "100%",
+                        marginTop: "10px",
+                        width: 500,
+                        height: 300,
                       }}
                     />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs leading-5 text-gray-600">
-                  PNG, JPG, GIF up to 10MB
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="w-full">
-              <label className="block text-sm font-medium uppercase my-3  leading-6 text-gray-900">
-                Category
-              </label>
-
-              <div className="mt-2">
-                <select
-                  id="country"
-                  name="categories"
-                  onChange={selectCategories}
-                  autoComplete="off"
-                  className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                >
-                  <option hidden>Select Category</option>
-                  {categories.length > 0 &&
-                    categories.map((category, key) => (
-                      <option value={category._id} key={key}>
-                        {category?.name}
-                      </option>
-                    ))}
-                </select>
-                <div className="flex flex-wrap">
-                  {renderSelectedCategories()}
+                  )}
+                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                    <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                      <span>Upload a file</span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        className="sr-only"
+                        onChange={(e) => {
+                          setThumbnail(e.target.files[0]);
+                          handleImageChange(e);
+                        }}
+                      />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs leading-5 text-gray-600">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="w-full">
-              <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-                Author
-              </label>
-              <div className="mt-2">
-                <select
-                  id="country"
-                  name="author"
-                  autoComplete="off"
-                  onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                >
-                  <option hidden>Select Author</option>
-                  {authors.length > 0 &&
-                    authors.map((author, key) => (
-                      <option value={author._id} key={key}>
-                        {author?.name}
-                      </option>
-                    ))}
-                </select>
+
+            <div className="flex">
+              <div className="w-full">
+                <label className="block text-sm font-medium uppercase my-3  leading-6 text-gray-900">
+                  Category
+                </label>
+
+                <div className="mt-2">
+                  <select
+                    id="country"
+                    name="categories"
+                    onChange={selectCategories}
+                    autoComplete="off"
+                    className="block w-full p-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                  >
+                    <option hidden>Select Category</option>
+                    {categories.length > 0 &&
+                      categories.map((category, key) => (
+                        <option value={category._id} key={key}>
+                          {category?.name}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="flex flex-wrap">
+                    {renderSelectedCategories()}
+                  </div>
+                </div>
+              </div>
+              <div className="w-full">
+                <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+                  Author
+                </label>
+                <div className="mt-2">
+                  <select
+                    id="country"
+                    name="author"
+                    autoComplete="off"
+                    onChange={handleInputChange}
+                    className="block w-full p-3 rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                  >
+                    <option hidden>Select Author</option>
+                    {authors.length > 0 &&
+                      authors.map((author, key) => (
+                        <option value={author._id} key={key}>
+                          {author?.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="border-2 p-3  pb-8 mt-3">
-        <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
-          POST CONTENT
-        </label>
-        <HtmlEditor setHtml={setHtml} />
-      </div>
-      <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancel
-        </button>
-        {loading ? (
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Processing...
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Save
-          </button>
-        )}
-      </div>
-    </form>
-  </div>
+        <div className="border-2 p-3  pb-8 mt-3">
+          <label className="block text-sm font-medium uppercase my-3 leading-6 text-gray-900">
+            POST CONTENT
+          </label>
+          <HtmlEditor setHtml={setHtml} />
+        </div>
+      </form>
+    </div>
   );
 }
 

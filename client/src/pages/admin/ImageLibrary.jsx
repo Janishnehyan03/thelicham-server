@@ -1,5 +1,4 @@
-"use client";
-import Axios from "@/utils/Axios";
+import Axios from "../../utils/Axios";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

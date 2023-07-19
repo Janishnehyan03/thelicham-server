@@ -1,9 +1,6 @@
-"use client";
-import Axios from "@/utils/Axios";
-import { useUserContext } from "@/utils/userContext";
-import { setCookie } from "cookies-next";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Axios from "../../utils/Axios";
+import { useUserContext } from "../../utils/userContext";
+import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
 
 function LoginPage() {
@@ -12,7 +9,6 @@ function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setUser } = useUserContext();
-  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,22 +16,26 @@ function LoginPage() {
     try {
       let res = await Axios.post("/auth/login", { email, password });
       if (res.status === 200) {
-        setCookie("login_token", res.data.token);
+        localStorage.setItem("login_token", res.data.token);
         setLoading(false);
         localStorage.setItem("loggedIn", true);
         setUser(res.data.user);
         setEmail("");
         setPassword("");
         if (res.data.user?.role === "admin") {
-          router.push("/admin/dashboard");
+          window.location.href = "/dashboard";
         } else {
-          router.push("/");
+          window.location.href = "/";
         }
       }
     } catch (error) {
       setLoading(false);
       console.log(error.response);
-      setError(error.response.data.message);
+      setError(
+        error.response.data?.message
+          ? error.response?.data?.message
+          : "something went wrong"
+      );
     }
   };
   return (

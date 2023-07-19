@@ -1,6 +1,4 @@
 import axios from "axios";
-import { getCookie } from "cookies-next";
-let token = getCookie("login_token");
 
 const Axios = axios.create({
   baseURL: "https://thelicham-server.vercel.app/api/v1",
@@ -10,7 +8,6 @@ const Axios = axios.create({
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "*",
     "Access-Control-Allow-Methods": "*",
-    Authorization: `Bearer ${token}`,
   },
   withCredentials: true,
 });

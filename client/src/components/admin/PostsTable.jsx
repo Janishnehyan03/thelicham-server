@@ -1,12 +1,15 @@
 import { faEdit, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment/moment";
-import Link from "next/link";
 import React from "react";
+import { Link } from "react-router-dom";
 
 function PostsTable({ posts }) {
   return (
     <div className="relative overflow-x-auto rounded-lg">
+      <button className="bg-gray-900 px-3 py-1 text-white m-3 rounded-lg">
+        <Link to={"/create-post"}>Create New Post</Link>
+      </button>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -65,7 +68,7 @@ function PostsTable({ posts }) {
                     </a>
                   </td>
                   <td className="px-6 py-4">
-                    <Link href={`/admin/edit-post/${post.slug}`}>
+                    <Link to={`/admin/edit-post/${post.slug}`}>
                       <FontAwesomeIcon
                         icon={faEdit}
                         className="h-4 text-blue-700"

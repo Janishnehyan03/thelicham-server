@@ -1,16 +1,15 @@
-"use client";
-import Axios from "@/utils/Axios";
-import { useUserContext } from "@/utils/userContext";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import Axios from "../utils/Axios";
+import { useUserContext } from "../utils/userContext";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { getMe, user } = useUserContext();
   const [subscription, setSubscription] = useState(null);
 
-  const route = usePathname();
+  const {pathname} = useLocation();
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -29,7 +28,7 @@ function Header() {
   }, []);
   return (
     <>
-      {!route.startsWith("/admin") && (
+      {!pathname.startsWith("/admin") && (
         <nav
           className={`bg-white border-gray-200  mt-10 ${
             isOpen ? "h-screen" : ""
@@ -78,7 +77,7 @@ function Header() {
                   <Link
                     href="/category/society"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/society"
+                      pathname === "/category/society"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}
@@ -90,7 +89,7 @@ function Header() {
                   <Link
                     href="/category/culture"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/culture"
+                      pathname === "/category/culture"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}
@@ -102,7 +101,7 @@ function Header() {
                   <Link
                     href="/category/fiction"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/fiction"
+                      pathname === "/category/fiction"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}
@@ -114,7 +113,7 @@ function Header() {
                   <Link
                     href="/category/discussions"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/discussions"
+                      pathname === "/category/discussions"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}
@@ -126,7 +125,7 @@ function Header() {
                   <Link
                     href="/category/series"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/series"
+                      pathname === "/category/series"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}
@@ -138,7 +137,7 @@ function Header() {
                   <Link
                     href="/about"
                     className={`block py-2 pl-3 pr-4  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0  ${
-                      route === "/category/about"
+                      pathname === "/category/about"
                         ? "text-red-600"
                         : "text-gray-900"
                     }`}

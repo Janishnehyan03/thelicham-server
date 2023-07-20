@@ -1,11 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@300;700&family=Noto+Serif+Malayalam&display=swap');
+
 .malayalam-font {
-  font-family: "Your-Malayalam-Font", sans-serif; /* Replace 'Your-Malayalam-Font' with the actual font name or URL */
+  font-family: "Noto Sans Malayalam", sans-serif; /* Replace 'Your-Malayalam-Font' with the actual font name or URL */
 }
 .detail-title {
   font-family: "Noto Sans Malayalam", sans-serif;
-  font-family: "Noto Serif Malayalam", serif;
 }
 .detail-html p{
   font-family: "Noto Sans Malayalam", sans-serif;
-  font-family: "Noto Serif Malayalam", serif;
 }

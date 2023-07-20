@@ -1,10 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import ImageLibrary from "./pages/admin/ImageLibrary";
-import DashBoard from "./pages/admin/Dashboard";
 import Header from "./components/Header";
-import { UserContextProvider } from "./utils/userContext";
 import PostUpload from "./components/admin/PostUpload";
-import Login from './pages/auth/Login'
+import DashBoard from "./pages/admin/Dashboard";
+import ImageLibrary from "./pages/admin/ImageLibrary";
+import Login from './pages/auth/Login';
+import { UserContextProvider } from "./utils/userContext";
+
 
 export default function App() {
   return (

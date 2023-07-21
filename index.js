@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const fs = require("fs");
 const hbs = require("express-handlebars");
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
 
 const userRoute = require("./routes/userRoute");
 const authRoute = require("./routes/authRoute");
@@ -21,6 +23,7 @@ const viewRoute = require("./routes/viewRoute");
 const handleMongoError = require("./utils/errorHandler");
 const Post = require("./models/postModel");
 const path = require("path");
+const User = require("./models/userModel");
 
 dotenv.config();
 // Connect to the database
@@ -48,7 +51,6 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-
 app.engine(
   "hbs",
   hbs.engine({
@@ -69,6 +71,31 @@ app.use("/api/v1/post", postRoute);
 app.use("/api/v1/visitors", visitorCountRoute);
 app.use("/api/v1/subscription", subscriptionRoute);
 app.use("/api/v1/image", imageRoute);
+
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Define a middleware to validate JWT token and pass user data to the view
+app.use((req, res, next) => {
+  const token = req.cookies.jwt; // Assuming you store the token in the session after successful login
+  if (token) {
+    try {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      User.findById(decodedToken.userId).then((user) => {
+        // Verify the token using your secret
+        res.locals.user = user; // Assuming your token has user information
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  next();
+});
 
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("*", function (req, res) {

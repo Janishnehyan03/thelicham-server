@@ -1,10 +1,13 @@
 const Post = require("../models/postModel");
-
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
 const router = require("express").Router();
 
 router.get("/", async (req, res) => {
   try {
-    let data = await Post.find({published:true}).populate("author").populate("categories")
+    let data = await Post.find({ published: true })
+      .populate("author")
+      .populate("categories");
     let posts = data.map((post) => {
       return {
         title: `${post.title}`,
@@ -17,7 +20,18 @@ router.get("/", async (req, res) => {
       };
     });
 
-    res.render("home", { posts, title: "Thelicham" ,pageDescription:"Thelicham"});
+    let user = null;
+    console.log(req.cookies);
+    if (req.cookies.jwt) {
+      const decodedToken = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+      user = await User.findById(decodedToken.userId);
+    }
+    res.render("home", {
+      posts,
+      title: "Thelicham",
+      pageDescription: "Thelicham",
+      user,
+    });
   } catch (error) {
     console.log(error);
     res.render("error");

@@ -199,3 +199,13 @@ exports.deletePost = async (req, res, next) => {
     next(error);
   }
 };
+exports.updatePost = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    let data = await Post.findByIdAndUpdate(req.params.id, req.body);
+    console.log(data);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};

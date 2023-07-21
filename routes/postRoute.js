@@ -25,7 +25,7 @@ router.post(
   upload.single("thumbnail"),
   createPost
 );
-router.post("/", getAllPosts);
+router.post("/unpublished", getAllPosts);
 router.get("/", getPublished);
 router.get("/category/:category", getPostsByCategoryName);
 router.get("/:slug", getPost);

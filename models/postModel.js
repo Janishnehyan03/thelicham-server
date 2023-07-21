@@ -37,7 +37,14 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, "Thumbnail is required"],
     },
-    // hashtags: [{ type: String, required: true }],
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
+    published: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

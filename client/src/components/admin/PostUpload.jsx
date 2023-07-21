@@ -153,7 +153,8 @@ function PostUpload() {
   }, []);
 
   return (
-    <div className="flex justify-center p-6 bg-white pb-14 items-center">
+    <aside className="overflow-y-scroll">
+      <div className="flex justify-center p-6 bg-white pb-14 items-center ">
       <form className="mx-3 border-2 p-10 rounded" onSubmit={handleSubmit}>
         <div className="mt-6 flex items-center justify-end gap-x-6">
           {loading ? (
@@ -329,6 +330,7 @@ function PostUpload() {
         </div>
       </form>
     </div>
+    </aside>
   );
 }
 

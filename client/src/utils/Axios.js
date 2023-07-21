@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const Axios = axios.create({
-  baseURL: "https://thelicham-server.vercel.app/api/v1",
-  // baseURL: "http://localhost:5000/api/v1",
+  // baseURL: "https://thelicham-server.vercel.app/api/v1",
+  baseURL: "http://localhost:5000/api/v1",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",

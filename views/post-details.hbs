@@ -11,7 +11,8 @@
             <h1 class="text-4xl detail-title font-bold text-red-800 leading-tight md:text-5xl">
                 {{post.title}}
             </h1>
-            <img src="{{post.thumbnail}}" alt="" class="w-full rounded-[20px]" height="400" width="400" />
+            {{!-- <img src="{{post.thumbnail}}" alt="" class="w-full rounded-[20px]" height="400" width="400" /> --}}
+            <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="" class="w-full rounded-[20px]" height="400" width="400" />
             <div class="flex justify-center flex-1 text-center">
                 <p class="text-xs text-red-700 hover:text-red-300 font-semibold tracking-wider uppercase">
                     #Category |
@@ -44,13 +45,14 @@
         </div>
     </article>
 </main>
+
 <aside aria-label="Related articles" class="py-8 lg:py-24 bg-gray-50">
     <div class="px-4 mx-auto max-w-screen-xl">
         <h2 class="mb-8 text-2xl font-bold text-gray-900">Related articles</h2>
         <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
             <article class="max-w-xs">
                 <a href="#">
-                    <img src="image-url" class="mb-5 rounded-lg" alt="Image 1" />
+                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" class="mb-5 rounded-lg" alt="Image 1" />
                 </a>
                 <h2 class="mb-2 text-xl font-bold leading-tight text-gray-900">
                     <a href="#">Title</a>
@@ -62,27 +64,24 @@
 </aside>
 
 <script>
+    // Optimize the detail-html content
     var detailHtmlContainer = document.querySelector('.detail-html');
-
-    // Get the value of the data-html attribute
-    var data = detailHtmlContainer.innerHTML
+    var data = detailHtmlContainer.innerHTML;
     detailHtmlContainer.innerHTML = ` <style>
-              @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@400&display=swap");
-              p, span {
-                font-family: 'Noto Serif Malayalam', serif !important;
-                font-size: 18px !important;
-                margin-top:10px;
-              }
-              h1,h2,h3,h4,h5,h6{
-                font-weight:800;
-                margin-top:20px;
-              }
-              img {
-                margin: 14px 0 !important;
-                border-radius: 10px !important;
-              }
-              
-
-            </style>
-            ${data}`
+                  @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@400&display=swap");
+                  p, span {
+                    font-family: 'Noto Serif Malayalam', serif !important;
+                    font-size: 18px !important;
+                    margin-top:10px;
+                  }
+                  h1,h2,h3,h4,h5,h6{
+                    font-weight:800;
+                    margin-top:20px;
+                  }
+                  img {
+                    margin: 14px 0 !important;
+                    border-radius: 10px !important;
+                  }
+                </style>
+                ${data}`;
 </script>

@@ -1,21 +1,29 @@
 import { Route, Routes } from "react-router-dom";
-import Header from "./components/Header";
-import PostUpload from "./components/admin/PostUpload";
-import DashBoard from "./pages/admin/Dashboard";
+import DashboardMain from "./components/Dashboard/DashboardMain";
 import ImageLibrary from "./pages/admin/ImageLibrary";
-import Login from './pages/auth/Login';
+import Login from "./pages/auth/Login";
 import { UserContextProvider } from "./utils/userContext";
-
+import PostUpload from './components/admin/PostUpload'
+import PostsTable from "./components/admin/PostsTable";
 
 export default function App() {
   return (
     <>
       <UserContextProvider>
-        <Header />
+        {/* <Header /> */}
         <Routes>
-          <Route path="/dashboard" element={<DashBoard />} />
+          <Route
+            path="/"
+            element={
+              <DashboardMain>
+                <PostsTable />
+              </DashboardMain>
+            }
+          />
+          <Route path="/create-post" element={ <DashboardMain>
+                <PostUpload />
+              </DashboardMain>} />
           <Route path="/image-library" element={<ImageLibrary />} />
-          <Route path="/create-post" element={<PostUpload />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </UserContextProvider>

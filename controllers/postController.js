@@ -29,7 +29,12 @@ exports.createPost = async (req, res, next) => {
     ) {
       return res.status(400).json({ error: "Invalid input" });
     }
-    const uploadResult = await cloudinary.uploader.upload(thumbnail);
+    const uploadResult = await cloudinary.uploader.upload(thumbnail, {
+      folder: "posts",
+      width: 2400,
+      height: 1600,
+      crop: "limit",
+    });
 
     const post = new Post({
       title,
@@ -55,7 +60,45 @@ exports.getAllPosts = async (req, res, next) => {
     const currentPage = parseInt(page) || 1;
     const skip = (currentPage - 1) * pageSize;
 
-    let query = Post.find()
+    let query = Post.find({ deleted: { $ne: true } })
+      .populate("categories")
+      .populate("author")
+      .select("-detailHtml")
+      .skip(skip)
+      .limit(pageSize);
+
+    if (sort) {
+      query = query.sort(sort);
+    }
+
+    const [results, totalCount] = await Promise.all([
+      query.exec(),
+      Post.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    res.status(200).json({
+      results: results.length,
+      data: results,
+      pagination: {
+        totalResults: totalCount,
+        currentPage,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getPublished = async (req, res, next) => {
+  try {
+    const { sort, limit, page } = req.query;
+    const pageSize = parseInt(limit) || 10;
+    const currentPage = parseInt(page) || 1;
+    const skip = (currentPage - 1) * pageSize;
+
+    let query = Post.find({ deleted: { $ne: true }, published: { $ne: false } })
       .populate("categories")
       .populate("author")
       .select("-detailHtml")
@@ -92,6 +135,7 @@ exports.getPostsByCategoryName = async (req, res, next) => {
     // Find the category document that matches the provided category name
     const category = await Category.findOne({
       name: req.params.category.toUpperCase(),
+      deleted: { $ne: true },
     }).exec();
 
     if (!category) {
@@ -138,6 +182,19 @@ exports.getPost = async (req, res, next) => {
         relatedPosts,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    let data = await Post.updateOne(
+      { slug: req.params.slug },
+      { deleted: true },
+      { new: true }
+    );
+    res.status(200).json({ deleted: true });
   } catch (error) {
     next(error);
   }

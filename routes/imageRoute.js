@@ -35,7 +35,10 @@ const uploadToCloudinary = async (file) => {
 
     // Upload the file to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(file, {
-      folder: "images", // Optional folder name in Cloudinary
+      folder: "library",
+      width: 2400,
+      height: 1600,
+      crop: "limit",
     });
 
     // Create a new image document in the database

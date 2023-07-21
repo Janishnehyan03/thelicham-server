@@ -11,7 +11,7 @@ function PostsTable() {
 
   const getPosts = async () => {
     try {
-      let { data } = await Axios.get("/post");
+      let { data } = await Axios.post("/post/unpublished");
       setPosts(data.data);
       setLoading(false); // Set loading to false once data is fetched
     } catch (error) {
@@ -20,6 +20,16 @@ function PostsTable() {
     }
   };
 
+  const publishPost = async (postId, status) => {
+    try {
+      let response = await Axios.patch(`/post/${postId}`, {
+        published: status,
+      });
+      getPosts();
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
   useEffect(() => {
     getPosts();
   }, []);
@@ -60,7 +70,7 @@ function PostsTable() {
                 Category
               </th>
               <th scope="col" className="px-6 py-3">
-                View
+                Status
               </th>
               <th scope="col" className="px-6 py-3">
                 Edit
@@ -80,7 +90,12 @@ function PostsTable() {
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      {post?.title.substring(0, 35)}...
+                      <Link
+                        className="hover:text-blue-500"
+                        to={`/post/${post.slug}`}
+                      >
+                        {post?.title.substring(0, 35)}...
+                      </Link>
                     </th>
                     <td className="px-6 py-4">{post?.author?.name}</td>
                     <td className="px-6 py-4">
@@ -97,12 +112,18 @@ function PostsTable() {
                       ))}
                     </td>
                     <td className="px-6 py-4">
-                      <a target="_blank" href={`/posts/${post.slug}`}>
-                        <FontAwesomeIcon
-                          icon={faEye}
-                          className="h-4 cursor-pointer text-gray-100"
-                        />
-                      </a>
+                      {post.published ? (
+                        <button
+                          onClick={() => publishPost(post._id, false)}
+                          className="text-green-300"
+                        >
+                          Published
+                        </button>
+                      ) : (
+                        <button onClick={() => publishPost(post._id, true)}>
+                          Publish
+                        </button>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <Link to={`/admin/edit-post/${post.slug}`}>

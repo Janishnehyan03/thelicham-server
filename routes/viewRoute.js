@@ -4,7 +4,7 @@ const router = require("express").Router();
 
 router.get("/", async (req, res) => {
   try {
-    let data = await Post.find().populate("author").populate("categories");
+    let data = await Post.find({published:true}).populate("author").populate("categories")
     let posts = data.map((post) => {
       return {
         title: `${post.title}`,

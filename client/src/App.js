@@ -5,6 +5,7 @@ import Login from "./pages/auth/Login";
 import { UserContextProvider } from "./utils/userContext";
 import PostUpload from './components/admin/PostUpload'
 import PostsTable from "./components/admin/PostsTable";
+import Profile from './pages/Profile'
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
         {/* <Header /> */}
         <Routes>
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <DashboardMain>
                 <PostsTable />
@@ -25,6 +26,7 @@ export default function App() {
               </DashboardMain>} />
           <Route path="/image-library" element={<ImageLibrary />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </UserContextProvider>
     </>

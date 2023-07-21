@@ -1,9 +1,8 @@
-"use client";
 import React from "react";
-import { useUserContext } from "@/utils/userContext";
-import Link from "next/link";
+import { useUserContext } from "../utils/userContext";
+import { Link } from "react-router-dom";
 
-function UserProfile() {
+function Profile() {
   const { user } = useUserContext();
 
   return (
@@ -109,4 +108,4 @@ function UserProfile() {
   );
 }
 
-export default UserProfile;
+export default Profile;

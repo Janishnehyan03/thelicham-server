@@ -7,7 +7,7 @@ import PostUpload from './components/admin/PostUpload'
 import PostsTable from "./components/admin/PostsTable";
 import Profile from './pages/Profile'
 
-export default function App() {
+export default function MyReactApp() {
   return (
     <>
       <UserContextProvider>

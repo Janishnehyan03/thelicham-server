@@ -72,31 +72,6 @@ app.use("/api/v1/visitors", visitorCountRoute);
 app.use("/api/v1/subscription", subscriptionRoute);
 app.use("/api/v1/image", imageRoute);
 
-app.use(
-  session({
-    secret: process.env.JWT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-// Define a middleware to validate JWT token and pass user data to the view
-app.use((req, res, next) => {
-  const token = req.cookies.jwt; // Assuming you store the token in the session after successful login
-  if (token) {
-    try {
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-      User.findById(decodedToken.userId).then((user) => {
-        // Verify the token using your secret
-        res.locals.user = user; // Assuming your token has user information
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  next();
-});
-
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("*", function (req, res) {
   res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));

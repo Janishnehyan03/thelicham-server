@@ -136,6 +136,7 @@ exports.getPostsByCategoryName = async (req, res, next) => {
     const category = await Category.findOne({
       name: req.params.category.toUpperCase(),
       deleted: { $ne: true },
+      published: { $ne: false },
     }).exec();
 
     if (!category) {
@@ -159,7 +160,7 @@ exports.getPost = async (req, res, next) => {
     const { slug } = req.params;
 
     // Find the post by slug
-    const post = await Post.findOne({ slug: slug })
+    const post = await Post.findOne({ slug: slug, published: { $ne: false } })
       .populate("author")
       .populate("categories");
 

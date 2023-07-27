@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import { Anek_Malayalam } from "next/font/google";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import SkeletonAnimation from "./Skelton";
 
 const notoSansMalayalam = Anek_Malayalam({ subsets: ["latin"] });
 

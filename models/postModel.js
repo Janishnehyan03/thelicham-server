@@ -45,6 +45,10 @@ const postSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    slide: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

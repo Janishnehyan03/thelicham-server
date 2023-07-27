@@ -6,9 +6,6 @@ const authorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-  },
   username: {
     required: [true, "Username is required"],
     type: String,
@@ -17,13 +14,8 @@ const authorSchema = new mongoose.Schema({
   image: {
     type: String,
   },
-  facebook: {
-    type: String,
-  },
-  twitter: {
-    type: String,
-  },
-  instagram: {
+  description: {
+    required: [true, "Description is required"],
     type: String,
   },
 

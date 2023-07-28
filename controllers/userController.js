@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const jwt=require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 exports.getAllUsers = async (req, res, next) => {
   try {
@@ -11,14 +11,17 @@ exports.getAllUsers = async (req, res, next) => {
 };
 exports.getMe = async (req, res, next) => {
   try {
-
-    const token = req.cookies.jwt
-      ? req.cookies.jwt
+    const token = req.cookies.login_token
+      ? req.cookies.login_token
       : req.headers.authorization.split(" ")[1];
-      // console.log(token);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
-    res.status(200).json(user);
+    // console.log(token);
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.userId);
+      res.status(200).json(user);
+    } else {
+      res.status(200).json({ user: null });
+    }
   } catch (error) {
     next(error);
   }

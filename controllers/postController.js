@@ -202,7 +202,8 @@ exports.updatePost = async (req, res, next) => {
   try {
     let data = await Post.findOneAndUpdate(
       { slug: req.params.slug },
-      req.body
+      req.body,
+      { new: true }
     );
     res.status(200).json(data);
   } catch (error) {

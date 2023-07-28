@@ -17,7 +17,7 @@ exports.createPost = async (req, res, next) => {
     if (!req.file) {
       return res.status(400).json({ error: "image not uploaded" });
     }
-
+    let thumbnail = req.file.thumbnail;
     const { title, description, detailHtml, author, categories, slug } =
       req.body;
     if (

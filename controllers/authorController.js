@@ -95,12 +95,14 @@ exports.getAuthorByUsername = async (req, res, next) => {
 
 exports.updateAuthor = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    let image = await uploadToCloudinary(req.body.image);
 
-    const updatedAuthor = await Author.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true } // Return the updated document
+    const { username } = req.params;
+
+    const updatedAuthor = await Author.findOneAndUpdate(
+      { username: username },
+      { ...req.body, image },
+      { new: true }
     );
 
     if (!updatedAuthor) {

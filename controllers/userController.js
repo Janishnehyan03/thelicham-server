@@ -11,10 +11,11 @@ exports.getAllUsers = async (req, res, next) => {
 };
 exports.getMe = async (req, res, next) => {
   try {
-    const token = req.cookies.login_token
-      ? req.cookies.login_token
+
+    const token = req.cookies.jwt
+      ? req.cookies.jwt
       : req.headers.authorization.split(" ")[1];
-      console.log(token);
+      // console.log(token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId);
     res.status(200).json(user);

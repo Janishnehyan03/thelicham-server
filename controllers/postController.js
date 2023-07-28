@@ -14,7 +14,9 @@ cloudinary.config({
 
 exports.createPost = async (req, res, next) => {
   try {
-    const thumbnail = req.file.path;
+    if (!req.file) {
+      return res.status(400).json({ error: "image not uploaded" });
+    }
 
     const { title, description, detailHtml, author, categories, slug } =
       req.body;
@@ -190,11 +192,7 @@ exports.getPost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
-    let data = await Post.updateOne(
-      { slug: req.params.slug },
-      { deleted: true },
-      { new: true }
-    );
+    let data = await Post.findOneAndDelete({ slug: req.params.slug });
     res.status(200).json({ deleted: true });
   } catch (error) {
     next(error);
@@ -202,9 +200,7 @@ exports.deletePost = async (req, res, next) => {
 };
 exports.updatePost = async (req, res, next) => {
   try {
-    console.log(req.body);
     let data = await Post.findByIdAndUpdate(req.params.id, req.body);
-    console.log(data);
     res.status(200).json(data);
   } catch (error) {
     next(error);

@@ -1,7 +1,12 @@
 // Import the necessary modules
 const express = require("express");
 const router = express.Router();
-const { signUp, login, logout, verifyToken } = require("../controllers/authController");
+const {
+  signUp,
+  login,
+  logout,
+  verifyToken,
+} = require("../controllers/authController");
 
 // Create a route to login a user
 router.post("/login", login);

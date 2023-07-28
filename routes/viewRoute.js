@@ -21,7 +21,6 @@ router.get("/", async (req, res) => {
     });
 
     let user = null;
-    console.log(req.cookies);
     if (req.cookies.jwt) {
       const decodedToken = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
       user = await User.findById(decodedToken.userId);

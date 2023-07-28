@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const Email = require("../utils/email");
-const crypto = require("crypto");
+
 
 exports.signUp = async (req, res, next) => {
   try {

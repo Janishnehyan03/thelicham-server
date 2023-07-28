@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Standard Plan",
+    "price": 9.99,
+    "deleted": false,
+    "articles": [
+      {
+        "title": "Getting Started with Next.js",
+        "details": "Learn how to set up and create your first Next.js app.",
+        "author": "649983ddaa3fdb69838b8dce"
+      },
+      {
+        "title": "React Hooks: An Introduction",
+        "details": "Discover the basics of React Hooks and how to use them in your applications.",
+        "author": "64998439804c17d8eaf0839f"
+      }
+    ]
+  },
+  
+  {
+    "title": "BASIC PLAN",
+    "price": 4.99,
+    "deleted": false,
+    "articles": [
+      {
+        "title": "Introduction to Node.js",
+        "details": "Get started with Node.js and build your first server-side applications.",
+        "author": "64ad991a5502fecce29cc9c1"
+      }
+    ]
+  }
+]

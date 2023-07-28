@@ -16,7 +16,7 @@ router.get("/userId/:id", getAuthorById);
 router.use(protect, restrictTo("admin"));
 
 router.post("/", createAuthor);
-router.patch("/:id", updateAuthor);
+router.patch("/:username", updateAuthor);
 router.delete("/:id", deleteAuthor);
 
 module.exports = router;

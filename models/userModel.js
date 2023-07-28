@@ -17,6 +17,8 @@ const userSchema = new Schema(
         "Please provide a valid email address",
       ],
     },
+    googleId: { type: String, unique: true }, // Google ID for the user
+    googleToken: { type: String },
     username: {
       type: String,
       required: [true, "Username is required"],

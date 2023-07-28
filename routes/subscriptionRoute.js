@@ -6,7 +6,9 @@ const crypto = require("crypto");
 const Subscription = require("../models/subscriptionModel");
 const moment = require("moment");
 const { protect, restrictTo } = require("../controllers/authController");
-const Magazine = require("../models/magazineModel");
+const Issue = require("../models/issueModel");
+const fs = require("fs");
+const path = require("path");
 
 dotenv.config();
 
@@ -104,7 +106,8 @@ router.get("/", protect, async (req, res) => {
 
     let hasSubscription = false;
     let expiryDate = null;
-    const magazines = await Magazine.find();
+    let plan = null;
+    const issues = await Issue.find();
 
     if (
       subscription &&
@@ -112,8 +115,10 @@ router.get("/", protect, async (req, res) => {
       subscription.paymentStatus === "success"
     ) {
       hasSubscription = true;
+      plan = subscription.plan;
       expiryDate = moment(subscription.endDate).format("MMMM Do YYYY");
-      res.json({ magazines, user: { hasSubscription, expiryDate } });
+
+      res.json({ issues, user: { hasSubscription, expiryDate, plan } });
     } else {
       res.json({ user: { hasSubscription, expiryDate } });
     }
@@ -122,17 +127,33 @@ router.get("/", protect, async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-router.post(
-  "/magazine",
+router.post("/issue", protect, restrictTo("admin"), async (req, res, next) => {
+  try {
+    let data = await Issue.create(req.body);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get(
+  "/issue/:id",
   protect,
   restrictTo("admin"),
   async (req, res, next) => {
     try {
-      let data = await Magazine.create(req.body);
+      let data = await Issue.findById(req.params.id);
       res.status(200).json(data);
     } catch (error) {
       next(error);
     }
   }
 );
+
+async function uploadData() {
+  const jsonData = fs.readFileSync(path.join() + "/demo-data/issues.json");
+  const plans = JSON.parse(jsonData);
+  const result = await Issue.insertMany(plans);
+  console.log(result);
+}
+// uploadData()
 module.exports = router;

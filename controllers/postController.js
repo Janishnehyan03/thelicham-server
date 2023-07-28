@@ -200,7 +200,7 @@ exports.deletePost = async (req, res, next) => {
 };
 exports.updatePost = async (req, res, next) => {
   try {
-    let data = await Post.findByIdAndUpdate(
+    let data = await Post.findOneAndUpdate(
       { slug: req.params.slug },
       req.body
     );

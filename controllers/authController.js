@@ -2,10 +2,8 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const Email = require("../utils/email");
 
-
 exports.signUp = async (req, res, next) => {
   try {
-
     async function generateUniqueOTP() {
       const OTP_LENGTH = 6;
       const chars = "0123456789";
@@ -50,9 +48,10 @@ exports.signUp = async (req, res, next) => {
         .send("OTP")
         .then((data) => {
           console.log("email sent");
-        }).catch(err=>{
-          console.log(err);
         })
+        .catch((err) => {
+          console.log(err);
+        });
 
       // Return the JWT token and the user details
       res.status(200).json(newUser);
@@ -134,13 +133,10 @@ exports.verifyToken = async (req, res, next) => {
           maxAge: decoded.exp,
         });
         // Return the JWT token and the user details
-        res.status(200).json({
-          token,
-          user,
-        });
+        res.render("email-verification", { verified: true });
       }
     } else {
-      res.status(400).json({ message: "User Not Found" });
+      res.render("email-verification", { verified: false });
     }
   } catch (error) {
     next(error);

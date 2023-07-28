@@ -5,6 +5,7 @@ const Email = require("../utils/email");
 
 exports.signUp = async (req, res, next) => {
   try {
+
     async function generateUniqueOTP() {
       const OTP_LENGTH = 6;
       const chars = "0123456789";
@@ -49,10 +50,12 @@ exports.signUp = async (req, res, next) => {
         .send("OTP")
         .then((data) => {
           console.log("email sent");
-        });
+        }).catch(err=>{
+          console.log(err);
+        })
 
       // Return the JWT token and the user details
-      res.status(201).json(newUser);
+      res.status(200).json(newUser);
     }
   } catch (err) {
     next(err);

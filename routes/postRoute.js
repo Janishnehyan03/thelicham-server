@@ -30,7 +30,7 @@ router.post("/unpublished", getAllPosts);
 router.get("/", getPublished);
 router.get("/category/:category", getPostsByCategoryName);
 router.get("/:slug", getPost);
-router.patch('/:id',protect,restrictTo('admin'),updatePost)
+router.patch('/:slug',protect,restrictTo('admin'),updatePost)
 router.delete("/:slug", deletePost);
 
 module.exports = router;

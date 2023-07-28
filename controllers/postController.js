@@ -200,7 +200,10 @@ exports.deletePost = async (req, res, next) => {
 };
 exports.updatePost = async (req, res, next) => {
   try {
-    let data = await Post.findByIdAndUpdate(req.params.id, req.body);
+    let data = await Post.findByIdAndUpdate(
+      { slug: req.params.slug },
+      req.body
+    );
     res.status(200).json(data);
   } catch (error) {
     next(error);

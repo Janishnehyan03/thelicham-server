@@ -138,7 +138,6 @@ router.post("/issue", protect, restrictTo("admin"), async (req, res, next) => {
 router.get(
   "/issue/:id",
   protect,
-  restrictTo("admin"),
   async (req, res, next) => {
     try {
       let data = await Issue.findById(req.params.id);

@@ -14,10 +14,11 @@ cloudinary.config({
 
 exports.createPost = async (req, res, next) => {
   try {
+
     if (!req.file) {
       return res.status(400).json({ error: "image not uploaded" });
     }
-    let thumbnail = req.file.thumbnail;
+    let thumbnail = req.file.path;
     const { title, description, detailHtml, author, categories, slug } =
       req.body;
     if (
@@ -26,17 +27,21 @@ exports.createPost = async (req, res, next) => {
       !detailHtml ||
       !author ||
       !categories ||
-      !slug ||
-      !thumbnail
+      !slug
     ) {
       return res.status(400).json({ error: "Invalid input" });
     }
-    const uploadResult = await cloudinary.uploader.upload(thumbnail, {
-      folder: "posts",
-      width: 2400,
-      height: 1600,
-      crop: "limit",
-    });
+
+    const uploadResult = await cloudinary.uploader
+      .upload(thumbnail, {
+        folder: "posts",
+        width: 2400,
+        height: 1600,
+        crop: "limit",
+      })
+      .catch((err) => {
+        console.log("cloudinary error", err);
+      });
 
     const post = new Post({
       title,

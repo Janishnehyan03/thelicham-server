@@ -1,35 +1,54 @@
-const handleDuplicateKeyError = (error, res) => {
-  const field = Object.keys(error.keyValue);
-  const value = error.keyValue[field];
-  const message = `${field} (${value}) already exists.`;
-  res.status(409).json({ message });
+// Error Controller
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+const handleModelValidationError = (err, res) => {
+  if (err.name === "ValidationError") {
+    // Handling Mongoose Validation Errors
+    const errors = {};
+    for (const field in err.errors) {
+      const errorMessage =
+        process.env.NODE_ENV === "production"
+          ? `${field} is required`
+          : err.errors[field].message;
+      errors[field] = errorMessage;
+    }
+    res
+      .status(422)
+      .json({ status: "error", message: "Validation error occurred", errors });
+    return true;
+  }
+  return false;
 };
 
-const handleValidationError = (error, res) => {
-  const errors = Object.values(error.errors).map((err) => err.message);
-  const message = `Invalid input data. ${errors.join(" ")}`;
-  res.status(400).json({ message });
+const handleDuplicateKeyError = (err, res) => {
+  if (err.code === 11000) {
+    // Handling Mongoose Duplicate Key Error
+    const fieldName = Object.keys(err.keyValue)[0];
+    const message = `${
+      fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+    } is already in use`;
+    res.status(409).json({ status: "error", message });
+    return true;
+  }
+  return false;
 };
 
-const handleCastError = (error, res) => {
-  const message = `Invalid ${error.path}: ${error.value}`;
-  res.status(400).json({ message });
-};
+const errorHandler = (err,res, ) => {
+  let status = err.statusCode || 500;
+  let message = err.message;
 
-const handleMongooseError = (error, res) => {
-  console.log(error);
-  if (error.code === 11000) {
-    handleDuplicateKeyError(error, res);
-  } else if (error.name === "ValidationError") {
-    handleValidationError(error, res);
-  } else if (error.name === "CastError") {
-    
-    handleCastError(error, res);
-
-  } else {
-
-    res.status(500).json({ message: "Internal Server Error", error });
+  if (
+    !handleModelValidationError(err, res) &&
+    !handleDuplicateKeyError(err, res)
+  ) {
+    // Handle other errors if needed
+    if (process.env.NODE_ENV === "production") {
+      res.status(status).json({ status: "error", message });
+    } else {
+      res.status(status).json({ status: "error", message, stack: err.stack });
+    }
   }
 };
 
-module.exports = handleMongooseError;
+module.exports = errorHandler;

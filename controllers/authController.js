@@ -83,7 +83,7 @@ exports.login = async (req, res, next) => {
           const token = jwt.sign(
             { userId: existingUser._id },
             process.env.JWT_SECRET,
-            { expiresIn: "100d" }
+            { expiresIn: "600d" }
           );
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           res.cookie("jwt", token, {

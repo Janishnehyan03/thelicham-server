@@ -19,19 +19,6 @@ exports.createPost = async (req, res, next) => {
       return res.status(400).json({ error: "image not uploaded" });
     }
     let thumbnail = req.file.path;
-    const { title, description, detailHtml, author, categories, slug } =
-      req.body;
-    if (
-      !title ||
-      !description ||
-      !detailHtml ||
-      !author ||
-      !categories ||
-      !slug
-    ) {
-      return res.status(400).json({ error: "Invalid input" });
-    }
-
     const uploadResult = await cloudinary.uploader
       .upload(thumbnail, {
         folder: "posts",
@@ -44,18 +31,13 @@ exports.createPost = async (req, res, next) => {
       });
 
     const post = new Post({
-      title,
-      description,
-      detailHtml,
-      author,
-      categories,
+      ...req.body,
       thumbnail: uploadResult.secure_url, // Set the thumbnail URL from Cloudinary
-      slug: slugify(slug),
+      slug: slugify(req.body.slug),
     });
     await post.save();
     res.status(200).json(post);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

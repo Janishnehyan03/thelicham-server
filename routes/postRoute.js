@@ -16,7 +16,8 @@ const {
   getPost,
   deletePost,
   getPublished,
-  updatePost
+  updatePost,
+  getUnPublished
 } = require("../controllers/postController");
 
 router.post(
@@ -26,7 +27,7 @@ router.post(
   upload.single("thumbnail"),
   createPost
 );
-router.get("/type/unpublished", getAllPosts);
+router.get("/type/unpublished", getUnPublished);
 router.get("/", getPublished);
 router.get("/category/:category", getPostsByCategoryName);
 router.get("/:slug", getPost);

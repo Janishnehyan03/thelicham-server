@@ -118,6 +118,44 @@ exports.getPublished = async (req, res, next) => {
     next(error);
   }
 };
+exports.getUnPublished = async (req, res, next) => {
+  try {
+    const { sort, limit, page } = req.query;
+    const pageSize = parseInt(limit) || 10;
+    const currentPage = parseInt(page) || 1;
+    const skip = (currentPage - 1) * pageSize;
+
+    let query = Post.find()
+      .populate("categories")
+      .populate("author")
+      .select("-detailHtml")
+      .skip(skip)
+      .limit(pageSize);
+
+    if (sort) {
+      query = query.sort(sort);
+    }
+
+    const [results, totalCount] = await Promise.all([
+      query.exec(),
+      Post.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    res.status(200).json({
+      results: results.length,
+      pagination: {
+        totalResults: totalCount,
+        currentPage,
+        totalPages,
+      },
+      data: results,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.getPostsByCategoryName = async (req, res, next) => {
   try {

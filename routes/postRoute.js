@@ -17,7 +17,8 @@ const {
   deletePost,
   getPublished,
   updatePost,
-  getUnPublished
+  getUnPublished,
+  getUnPublishedOne
 } = require("../controllers/postController");
 
 router.post(
@@ -31,6 +32,7 @@ router.get("/type/unpublished", getUnPublished);
 router.get("/", getPublished);
 router.get("/category/:category", getPostsByCategoryName);
 router.get("/:slug", getPost);
+router.get("/unpublished/:slug", getUnPublishedOne);
 router.patch('/:slug',protect,restrictTo('admin'),updatePost)
 router.delete("/:slug", deletePost);
 

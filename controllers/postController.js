@@ -14,7 +14,6 @@ cloudinary.config({
 
 exports.createPost = async (req, res, next) => {
   try {
-
     if (!req.file) {
       return res.status(400).json({ error: "image not uploaded" });
     }
@@ -210,6 +209,33 @@ exports.getPost = async (req, res, next) => {
         relatedPosts,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getUnPublishedOne = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    // Find the post by slug
+    const post = await Post.findOne({ slug: slug, published: { $ne: true } })
+      .populate("author")
+      .populate("categories");
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Find the related posts based on some criteria (e.g., same category)
+    const relatedPosts = await Post.find({
+      category: post.category,
+      slug: { $ne: post.slug }, // Exclude the current post
+    })
+      .select("-detailHtml")
+      .populate("author")
+      .populate("categories");
+
+    res.status(200).json(post);
   } catch (error) {
     next(error);
   }

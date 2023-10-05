@@ -5,6 +5,7 @@ const Author = require("../models/authorModel");
 const slugify = require("slugify");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
+const cheerio = require("cheerio"); // Import cheerio
 
 cloudinary.config({
   cloud_name: "df690pfy3",
@@ -14,29 +15,63 @@ cloudinary.config({
 
 exports.createPost = async (req, res, next) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "image not uploaded" });
+    if (!req.file.path) {
+      return res.status(400).json({ error: "image is not uploaded" });
     }
-    let thumbnail = req.file.path;
-    const uploadResult = await cloudinary.uploader
-      .upload(thumbnail, {
-        folder: "posts",
-        width: 2400,
-        height: 1600,
-        crop: "limit",
-      })
-      .catch((err) => {
-        console.log("cloudinary error", err);
-      });
+    const $ = cheerio.load(req.body.detailHtml);
 
+    // Extract image sources
+    const imageSources = [];
+    const imagePromises = [];
+    const thumbnail = cloudinary.uploader.upload(req.file.path, {
+      folder: "posts",
+      width: 2400,
+      height: 1600,
+      crop: "limit",
+    });
+    $("img").each((index, element) => {
+      const src = $(element).attr("src");
+      if (src) {
+        imageSources.push(src);
+
+        // Upload the image to Cloudinary and replace the image tag
+        const imageUploadPromise = cloudinary.uploader.upload(src, {
+          folder: "posts",
+          width: 2400,
+          height: 1600,
+          crop: "limit",
+        });
+
+        imagePromises.push(imageUploadPromise);
+
+        // Replace the image with a placeholder while uploading
+        const placeholderImage = "placeholder-image-url"; // Replace with your placeholder image URL
+        $(element).attr("src", placeholderImage);
+      }
+    });
+
+    // Wait for all image uploads to complete
+    const imageResults = await Promise.all(imagePromises);
+
+    // Replace the placeholder images with Cloudinary URLs
+    imageResults.forEach((result, index) => {
+      $("img").eq(index).attr("src", result.secure_url);
+    });
+
+    const detailHtmlWithCloudinaryUrls = $.html();
+
+    // Create and save the Post document
     const post = new Post({
       ...req.body,
-      thumbnail: uploadResult.secure_url, // Set the thumbnail URL from Cloudinary
+      detailHtml: detailHtmlWithCloudinaryUrls, // Use the HTML with Cloudinary URLs
       slug: slugify(req.body.slug),
+      thumbnail: (await thumbnail).secure_url,
     });
+
     await post.save();
     res.status(200).json(post);
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -53,7 +88,8 @@ exports.getAllPosts = async (req, res, next) => {
       .populate("author")
       .select("-detailHtml")
       .skip(skip)
-      .limit(pageSize);
+      .limit(pageSize)
+      
 
     if (sort) {
       query = query.sort(sort);
@@ -129,7 +165,7 @@ exports.getUnPublished = async (req, res, next) => {
       .populate("author")
       .select("-detailHtml")
       .skip(skip)
-      .limit(pageSize);
+      .limit(pageSize).sort({ createdAt: -1 });
 
     if (sort) {
       query = query.sort(sort);

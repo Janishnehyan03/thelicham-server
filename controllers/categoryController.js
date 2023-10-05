@@ -12,7 +12,7 @@ exports.createCategory = async (req, res, next) => {
 
 exports.getAllCategories = async (req, res, next) => {
   try {
-    let data = await Category.find().populate("subCategories");
+    let data = await Category.find().populate("subCategories").sort('name')
     res.status(200).json({ results: data.length, data });
   } catch (error) {
     next(error);
@@ -22,14 +22,7 @@ exports.getAllCategories = async (req, res, next) => {
 exports.updateCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
-    const subcategoryIds = req.body.subcategoryIds; // Assuming an array of subcategory IDs is passed in the request body
-
-    if (subcategoryIds && subcategoryIds.includes(categoryId)) {
-      res
-        .status(400)
-        .json({ error: "Category ID cannot be added as a subcategory." });
-      return;
-    }
+    const { name, subcategoryIds } = req.body;
 
     const category = await Category.findById(categoryId);
 
@@ -38,14 +31,50 @@ exports.updateCategory = async (req, res, next) => {
       return;
     }
 
-    const updatedSubcategories = category.subCategories.filter((subcategory) =>
-      subcategoryIds.includes(subcategory._id.toString())
-    );
+    // Check if the provided subcategoryIds contain the categoryId
+    if (subcategoryIds && subcategoryIds.includes(categoryId.toString())) {
+      res
+        .status(400)
+        .json({ error: "Category ID cannot be added as a subcategory." });
+      return;
+    }
 
-     category.subCategories = updatedSubcategories;
+    // Update the name if it's provided in the request
+    if (name) {
+      category.name = name;
+    }
 
-    if (req.body.name) {
-      category.name = req.body.name;
+    // Update or add subcategories if subcategoryIds are provided
+    if (subcategoryIds && subcategoryIds.length > 0) {
+      // Create an array to store the updated subcategories
+      const updatedSubcategories = [];
+
+      // Loop through the provided subcategoryIds
+      for (const subcategoryId of subcategoryIds) {
+        // Check if the subcategoryId exists in the category's subCategories
+        const existingSubcategory = category.subCategories.find(
+          (subcategory) => subcategory._id.toString() === subcategoryId
+        );
+
+        if (existingSubcategory) {
+          // If it exists, update its properties (e.g., name)
+          const updatedSubcategory = {
+            ...existingSubcategory,
+            // Add any properties you want to update
+          };
+          updatedSubcategories.push(updatedSubcategory);
+        } else {
+          // If it doesn't exist, create a new subcategory
+          const newSubcategory = {
+            _id: subcategoryId,
+            // Add any properties you want for new subcategories
+          };
+          updatedSubcategories.push(newSubcategory);
+        }
+      }
+
+      // Replace the category's subCategories with the updated array
+      category.subCategories = updatedSubcategories;
     }
 
     const updatedCategory = await category.save();

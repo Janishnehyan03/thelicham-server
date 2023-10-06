@@ -15,9 +15,10 @@ cloudinary.config({
 
 exports.createPost = async (req, res, next) => {
   try {
-    if (!req.file.path) {
-      return res.status(400).json({ error: "image is not uploaded" });
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ error: "Image is not uploaded" });
     }
+
     const $ = cheerio.load(req.body.detailHtml);
 
     // Extract image sources
@@ -29,6 +30,7 @@ exports.createPost = async (req, res, next) => {
       height: 1600,
       crop: "limit",
     });
+
     $("img").each((index, element) => {
       const src = $(element).attr("src");
       if (src) {
@@ -71,10 +73,12 @@ exports.createPost = async (req, res, next) => {
     await post.save();
     res.status(200).json(post);
   } catch (error) {
-    console.log(error);
-    next(error);
+    console.error(error);
+    // Handle the error here, e.g., return an error response
+    res.status(500).json({ error: "An error occurred while creating the post." });
   }
 };
+
 
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -88,8 +92,7 @@ exports.getAllPosts = async (req, res, next) => {
       .populate("author")
       .select("-detailHtml")
       .skip(skip)
-      .limit(pageSize)
-      
+      .limit(pageSize);
 
     if (sort) {
       query = query.sort(sort);
@@ -165,7 +168,8 @@ exports.getUnPublished = async (req, res, next) => {
       .populate("author")
       .select("-detailHtml")
       .skip(skip)
-      .limit(pageSize).sort({ createdAt: -1 });
+      .limit(pageSize)
+      .sort({ createdAt: -1 });
 
     if (sort) {
       query = query.sort(sort);

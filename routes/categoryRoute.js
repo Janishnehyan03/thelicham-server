@@ -7,12 +7,14 @@ const {
   deleteCategory,
   getCategoryById,
   addSubCategory,
-  removeSubCategory
+  removeSubCategory,
+  getAllSubCategories
 } = require("../controllers/categoryController");
 const router = require("express").Router();
 
 router.post("/", protect, restrictTo("admin"), createCategory);
 router.get("/", getAllCategories);
+router.get("/subcategory/get", getAllSubCategories);
 router.get("/:id", getCategoryById);
 router.get("/name/:name", getOneCategory);
 router

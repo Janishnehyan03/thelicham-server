@@ -18,6 +18,14 @@ exports.getAllCategories = async (req, res, next) => {
     next(error);
   }
 };
+exports.getAllSubCategories = async (req, res, next) => {
+  try {
+    let data = await SubCategory.find()
+    res.status(200).json({ results: data.length, data });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.updateCategory = async (req, res, next) => {
   try {

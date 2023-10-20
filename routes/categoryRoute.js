@@ -6,6 +6,8 @@ const {
   getOneCategory,
   deleteCategory,
   getCategoryById,
+  addSubCategory,
+  removeSubCategory
 } = require("../controllers/categoryController");
 const router = require("express").Router();
 
@@ -17,5 +19,7 @@ router
   .route("/:id", protect, restrictTo("admin"))
   .patch(updateCategory)
   .delete(deleteCategory);
+  router.patch('/:id/add',protect,restrictTo('admin'),addSubCategory)
+  router.delete('/:id/remove',protect,restrictTo('admin'),removeSubCategory)
 
 module.exports = router;

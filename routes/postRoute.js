@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const multer = require("multer");
 const storage = multer.diskStorage({
-  destination: '/tmp',
+  destination: "/tmp",
   filename: (req, file, cb) => {
-      cb(null, file.originalname);
+    cb(null, file.originalname);
   },
 });
 
@@ -18,7 +18,8 @@ const {
   getPublished,
   updatePost,
   getUnPublished,
-  getUnPublishedOne
+  getUnPublishedOne,
+  publishPost
 } = require("../controllers/postController");
 
 router.post(
@@ -33,7 +34,13 @@ router.get("/", getPublished);
 router.get("/category/:category", getPostsByCategoryName);
 router.get("/:slug", getPost);
 router.get("/unpublished/:slug", getUnPublishedOne);
-router.patch('/:slug',protect,restrictTo('admin'),updatePost)
+router.patch(
+  "/:slug",
+  protect,
+  restrictTo("admin"),
+  updatePost
+);
 router.delete("/:slug", deletePost);
+router.put("/publish/:slug", publishPost);
 
 module.exports = router;

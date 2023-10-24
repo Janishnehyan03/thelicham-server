@@ -61,6 +61,8 @@ exports.createPost = async (req, res, next) => {
     });
 
     const detailHtmlWithCloudinaryUrls = $.html();
+    // Convert categories to an array
+    const categoriesArray = req.body.categories.split(",");
 
     // Create and save the Post document
     const post = new Post({
@@ -68,6 +70,7 @@ exports.createPost = async (req, res, next) => {
       detailHtml: detailHtmlWithCloudinaryUrls, // Use the HTML with Cloudinary URLs
       slug: slugify(req.body.slug),
       thumbnail: (await thumbnail).secure_url,
+      categories: categoriesArray,
     });
 
     await post.save();
@@ -75,10 +78,11 @@ exports.createPost = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     // Handle the error here, e.g., return an error response
-    res.status(500).json({ error: "An error occurred while creating the post." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the post." });
   }
 };
-
 
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -121,11 +125,11 @@ exports.getAllPosts = async (req, res, next) => {
 exports.getPublished = async (req, res, next) => {
   try {
     const { sort, limit, page } = req.query;
-    const pageSize = parseInt(limit) || 10;
+    const pageSize = parseInt(limit) || 300;
     const currentPage = parseInt(page) || 1;
     const skip = (currentPage - 1) * pageSize;
 
-    let query = Post.find({ deleted: { $ne: true }, published: { $ne: false } })
+    let query = Post.find()
       .populate("categories")
       .populate("author")
       .select("-detailHtml")
@@ -152,6 +156,7 @@ exports.getPublished = async (req, res, next) => {
         totalPages,
       },
     });
+    console.log(results.length);
   } catch (error) {
     next(error);
   }
@@ -289,15 +294,79 @@ exports.deletePost = async (req, res, next) => {
     next(error);
   }
 };
-exports.updatePost = async (req, res, next) => {
+exports.publishPost = async (req, res, next) => {
   try {
     let data = await Post.findOneAndUpdate(
       { slug: req.params.slug },
-      req.body,
-      { new: true }
+      { published: true }
     );
-    res.status(200).json(data);
+    res.status(200).json({ published: true });
   } catch (error) {
     next(error);
+  }
+};
+exports.updatePost = async (req, res, next) => {
+  try {
+    const $ = cheerio.load(req.body.detailHtml);
+
+    // Extract image sources
+    const imageSources = [];
+    const imagePromises = [];
+
+    $("img").each((index, element) => {
+      const src = $(element).attr("src");
+      if (src && !src.includes("placeholder-image-url")) {
+        imageSources.push(src);
+
+        // Upload the image to Cloudinary and replace the image tag
+        const imageUploadPromise = cloudinary.uploader.upload(src, {
+          folder: "posts",
+          width: 2400,
+          height: 1600,
+          crop: "limit",
+        });
+
+        imagePromises.push(imageUploadPromise);
+
+        // Replace the image with a placeholder while uploading
+        const placeholderImage = "placeholder-image-url"; // Replace with your placeholder image URL
+        $(element).attr("src", placeholderImage);
+      }
+    });
+
+    // Wait for all image uploads to complete
+    const imageResults = await Promise.all(imagePromises);
+
+    // Replace the placeholder images with Cloudinary URLs
+    imageResults.forEach((result, index) => {
+      $("img").each((i, el) => {
+        const src = $(el).attr("src");
+        if (src === "placeholder-image-url") {
+          $(el).attr("src", result.secure_url);
+        }
+      });
+    });
+
+    const detailHtmlWithCloudinaryUrls = $.html();
+
+    // Find and update the Post document based on the provided slug
+    const updatedPost = await Post.findOne({ slug: req.params.slug });
+    if (!updatedPost) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Update post data
+    updatedPost.title = req.body.title;
+    updatedPost.content = req.body.content;
+    updatedPost.detailHtml = detailHtmlWithCloudinaryUrls; // Use the HTML with Cloudinary URLs
+
+    await updatedPost.save();
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error(error);
+    // Handle the error here, e.g., return an error response
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the post." });
   }
 };
